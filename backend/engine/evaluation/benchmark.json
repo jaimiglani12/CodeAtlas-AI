@@ -1,0 +1,83 @@
+[
+    {
+        "id": 1,
+        "question": "How does repository scanning work?",
+        "expected": [
+            "RepositoryScanner",
+            "scan"
+        ]
+    },
+    {
+        "id": 2,
+        "question": "How is Python code parsed?",
+        "expected": [
+            "CodeParser",
+            "parse"
+        ]
+    },
+    {
+        "id": 3,
+        "question": "How is metadata extracted?",
+        "expected": [
+            "MetadataExtractor",
+            "extract",
+            "traverse"
+        ]
+    },
+    {
+        "id": 4,
+        "question": "How are chunks generated?",
+        "expected": [
+            "ChunkGenerator",
+            "generate"
+        ]
+    },
+    {
+        "id": 5,
+        "question": "Where are embeddings created?",
+        "expected": [
+            "Embedder",
+            "create_embedding"
+        ]
+    },
+    {
+        "id": 6,
+        "question": "How does dense retrieval work?",
+        "expected": [
+            "DenseRetriever",
+            "retrieve"
+        ]
+    },
+    {
+        "id": 7,
+        "question": "How does BM25 retrieval work?",
+        "expected": [
+            "BM25Retriever",
+            "retrieve"
+        ]
+    },
+    {
+        "id": 8,
+        "question": "How does hybrid retrieval work?",
+        "expected": [
+            "HybridRetriever",
+            "retrieve"
+        ]
+    },
+    {
+        "id": 9,
+        "question": "How is the prompt generated?",
+        "expected": [
+            "PromptBuilder",
+            "build_prompt"
+        ]
+    },
+    {
+        "id": 10,
+        "question": "How is the repository index built?",
+        "expected": [
+            "RepositoryBuilder",
+            "build"
+        ]
+    }
+]
