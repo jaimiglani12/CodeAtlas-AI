@@ -3,6 +3,7 @@ class ChunkGenerator:
     def __init__(self, index):
 
         self.index = index
+        self.graph = {}
     
     def add_dependency(
                 self,
