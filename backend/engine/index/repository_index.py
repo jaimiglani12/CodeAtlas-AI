@@ -23,13 +23,11 @@ class RepositoryIndex:
         self.chunks = []
         self.reverse_dependency_graph={}
 
-    # ---------------- Files ----------------
 
     def add_file(self, file):
 
         self.files.append(file)
 
-    # ---------------- Functions ----------------
 
     def add_function(self, function):
 
@@ -43,7 +41,7 @@ class RepositoryIndex:
 
         }
 
-    # ---------------- Classes ----------------
+
 
     def add_class(self, class_info):
 
@@ -57,13 +55,12 @@ class RepositoryIndex:
 
         }
 
-    # ---------------- Imports ----------------
+
 
     def add_import(self, import_info):
 
         self.imports.append(import_info)
 
-    # ---------------- Calls ----------------
 
     def add_call(self, caller, callee):
 
@@ -82,13 +79,13 @@ class RepositoryIndex:
 
         self.reverse_dependency_graph[callee].append(caller)
 
-    # ---------------- Chunks ----------------
+  
 
     def add_chunk(self, chunk: Chunk):
 
         self.chunks.append(chunk)
 
-    # ---------------- Helpers ----------------
+
 
     def get_symbol(self, name):
 
