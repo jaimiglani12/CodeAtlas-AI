@@ -10,10 +10,6 @@ import tree_sitter_go
 import tree_sitter_rust
 
 
-# Each entry is the grammar loader for a language with tree-sitter support.
-# Languages not listed here are still scanned and chunked as plain text
-# (see engine/chunker/generator.py) — they just don't get an AST, so
-# CodeParser.parse() returns None for them instead of raising.
 _GRAMMAR_LOADERS = {
 
     "python": tree_sitter_python.language,
@@ -30,13 +26,6 @@ _GRAMMAR_LOADERS = {
 
 
 class CodeParser:
-    """
-    Parses source files into tree-sitter syntax trees.
-
-    Grammars are loaded lazily and cached on the class, so each language's
-    (relatively expensive) grammar load happens at most once per process,
-    no matter how many CodeParser instances are created or files parsed.
-    """
 
     _languages = {}
     _parsers = {}
@@ -63,12 +52,7 @@ class CodeParser:
         return cls._parsers[language]
 
     def parse(self, file):
-        """
-        Returns a tree-sitter Tree for languages with a wired-up grammar.
-        Returns None if the file's language has no AST support — this does
-        not mean the file was skipped, only that it won't get function,
-        class or call extraction. Callers must handle a None tree.
-        """
+        
 
         parser = self._parser_for(
             getattr(file, "language", None)
