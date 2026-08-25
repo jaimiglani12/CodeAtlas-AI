@@ -1,6 +1,3 @@
-# Languages with a tree-sitter grammar wired up in engine/parser/parser.py.
-# Files in these languages get full structural analysis: functions,
-# classes, imports and call graphs (see engine/metadata/extractor.py).
 
 AST_LANGUAGES = {
 
@@ -15,13 +12,6 @@ AST_LANGUAGES = {
     "rust",
 
 }
-
-
-# Every recognized file extension. Languages outside AST_LANGUAGES are
-# still scanned, shown in the file explorer, and chunked as searchable
-# text for chat — they just don't get function/class/call extraction
-# since no tree-sitter grammar is installed for them.
-
 EXTENSION_TO_LANGUAGE = {
 
     ".py": "python",
@@ -48,9 +38,6 @@ EXTENSION_TO_LANGUAGE = {
     ".go": "go",
 
     ".rs": "rust",
-
-    # Recognized, but without a bundled tree-sitter grammar — scanned and
-    # chunked as plain text so they're still searchable in chat.
     ".rb": "ruby",
     ".php": "php",
     ".cs": "csharp",
@@ -89,8 +76,6 @@ EXTENSION_TO_LANGUAGE = {
 
 }
 
-
-# Ignore these folders
 
 IGNORE_FOLDERS = [
 
