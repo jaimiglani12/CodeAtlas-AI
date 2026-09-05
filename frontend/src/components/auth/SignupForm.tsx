@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
+import { isAxiosError } from "axios";
 
 import Input from "../common/Input";
 import Button from "../common/Button";
@@ -31,8 +32,15 @@ export default function SignupForm() {
         setError(null);
         try {
             await authApi.signup(values);
-        } catch {
-            setError("Couldn't create that account. The username or email may already be taken.");
+        } catch (requestError) {
+            const detail = isAxiosError(requestError)
+                ? requestError.response?.data?.detail
+                : null;
+            setError(
+                typeof detail === "string"
+                    ? detail
+                    : "Couldn't create that account. Please try again."
+            );
             return;
         }
 
@@ -109,3 +117,4 @@ export default function SignupForm() {
         </form>
     );
 }
+
