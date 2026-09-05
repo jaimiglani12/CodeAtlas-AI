@@ -9,7 +9,7 @@ export default function CTA() {
 
             <Container>
 
-                <h2 className="font-display text-4xl font-medium text-parchment">
+                <h2 className="font-sans text-4xl font-semibold tracking-[-0.025em] text-parchment">
 
                     Ready to chart your first repository?
 

@@ -33,7 +33,7 @@ export default function Heading({
                 )
             }
 
-            <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-parchment">
+            <h2 className="mt-4 font-sans text-4xl font-semibold leading-tight tracking-[-0.025em] text-parchment">
                 {title}
             </h2>
 

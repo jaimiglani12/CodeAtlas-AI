@@ -21,7 +21,6 @@ torch
 
 numpy
 psycopg2-binary
-pgvector
 
 numpy
 scikit-learn

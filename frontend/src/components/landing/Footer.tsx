@@ -13,7 +13,7 @@ export default function Footer() {
 
                     <div>
 
-                        <div className="flex items-center gap-2 font-display text-lg font-semibold text-parchment">
+                        <div className="flex items-center gap-2 font-sans text-lg font-semibold tracking-tight text-parchment">
                             <ContourMark size={17} className="text-olive-500" />
                             CodeAtlas AI
                         </div>

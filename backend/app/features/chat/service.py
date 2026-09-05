@@ -9,6 +9,7 @@ from app.features.repository.indexer import RepositoryIndexer
 from app.features.repository.models import Repository
 
 from engine.retrieval.hybrid_retriever import HybridRetriever
+from engine.retrieval.context_expander import ContextExpander
 from engine.llm.prompt_builder import PromptBuilder
 from engine.llm.chat_engine import ChatEngine
 
@@ -83,6 +84,8 @@ class ChatService:
         retriever = HybridRetriever(index)
 
         results = retriever.retrieve(question)
+
+        results = ContextExpander(index).expand(question, results)
 
         prompt = PromptBuilder().build(
             question,

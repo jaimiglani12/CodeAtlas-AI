@@ -4,7 +4,7 @@ class GraphRetriever:
 
         self.index = index
 
-    def expand(self, results):
+    def expand(self, results, max_depth=None, limit=None):
 
         expanded = []
 
@@ -14,15 +14,10 @@ class GraphRetriever:
 
             chunk = result["chunk"]
 
-            self._dfs(
+            self._dfs(chunk.name, visited, expanded, 0, max_depth, limit)
 
-                chunk.name,
-
-                visited,
-
-                expanded
-
-            )
+            if limit is not None and len(expanded) >= limit:
+                break
 
         return expanded
 
@@ -34,11 +29,17 @@ class GraphRetriever:
 
         visited,
 
-        expanded
+        expanded,
+
+        depth=0,
+
+        max_depth=None,
+
+        limit=None,
 
     ):
 
-        if function_name in visited:
+        if function_name in visited or (limit is not None and len(expanded) >= limit):
             return
 
         visited.add(function_name)
@@ -59,14 +60,13 @@ class GraphRetriever:
 
             )
 
-        for callee in self.index.get_calls(function_name):
+        if max_depth is not None and depth >= max_depth:
+            return
 
-            self._dfs(
+        related = list(self.index.get_calls(function_name))
+        if hasattr(self.index, "get_callers"):
+            related.extend(self.index.get_callers(function_name))
 
-                callee,
+        for callee in related:
 
-                visited,
-
-                expanded
-
-            )
+            self._dfs(callee, visited, expanded, depth + 1, max_depth, limit)

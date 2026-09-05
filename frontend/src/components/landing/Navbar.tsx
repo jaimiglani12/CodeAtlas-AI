@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 
 import Container from "../common/Container";
 import Button from "../common/Button";
@@ -6,15 +7,15 @@ import ContourMark from "../icons/ContourMark";
 
 export default function Navbar() {
     return (
-        <header className="sticky top-0 z-50 border-b border-line bg-ink/90 backdrop-blur-md">
+        <header className="sticky top-0 z-50 border-b border-line bg-ink/80 backdrop-blur-xl">
 
             <Container>
 
-                <div className="flex h-19 items-center justify-between">
+                <div className="flex h-[68px] items-center justify-between">
 
                     <Link
                         to="/"
-                        className="flex items-center gap-2 font-display text-xl font-semibold text-parchment"
+                        className="flex items-center gap-2 font-sans text-lg font-semibold tracking-tight text-parchment"
                     >
                         <ContourMark className="text-olive-500" />
                         CodeAtlas AI
@@ -38,13 +39,12 @@ export default function Navbar() {
 
                     </nav>
 
-                    <div className="flex items-center gap-3.5">
+                    <div className="flex items-center gap-2.5">
 
                         <Link to="/login">
 
-                            <Button variant="secondary">
-
-                                Login
+                            <Button variant="secondary" className="hidden sm:inline-flex">
+                                Sign in
 
                             </Button>
 
@@ -53,8 +53,8 @@ export default function Navbar() {
                         <Link to="/signup">
 
                             <Button>
-
-                                Get started
+                                Open app
+                                <ArrowUpRight size={14} />
 
                             </Button>
 

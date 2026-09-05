@@ -8,7 +8,12 @@ from pathlib import Path
 from engine.analyzer.repository_analyzer import RepositoryAnalyzer
 
 
-STORAGE_ROOT = Path(__file__).resolve().parents[3] / "storage" / "repositories"
+STORAGE_ROOT = Path(
+    os.getenv(
+        "REPOSITORY_STORAGE_ROOT",
+        Path(__file__).resolve().parents[3] / "storage" / "repositories",
+    )
+)
 
 
 def _unique_dest(workspace_id: int, name: str) -> Path:
@@ -58,10 +63,18 @@ def extract_zip(file_obj, workspace_id: int, name: str) -> str:
 
     try:
         with zipfile.ZipFile(tmp_path) as archive:
+            destination_root = dest.resolve()
+
+            for member in archive.infolist():
+                member_path = (destination_root / member.filename).resolve()
+
+                if destination_root not in member_path.parents and member_path != destination_root:
+                    raise ValueError("Archive contains an unsafe file path.")
+
             archive.extractall(dest)
-    except zipfile.BadZipFile:
+    except (zipfile.BadZipFile, ValueError):
         shutil.rmtree(dest, ignore_errors=True)
-        raise ValueError("Uploaded file is not a valid .zip archive.")
+        raise ValueError("Uploaded file is not a valid or safe .zip archive.")
     finally:
         os.remove(tmp_path)
 

@@ -105,6 +105,10 @@ class RepositoryIndex:
 
         return self.dependency_graph.get(function_name, [])
 
+    def get_callers(self, function_name):
+
+        return self.reverse_dependency_graph.get(function_name, [])
+
     def get_file(self, path):
 
         for file in self.files:
