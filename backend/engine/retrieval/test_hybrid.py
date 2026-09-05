@@ -16,7 +16,13 @@ results = retriever.retrieve(
 
 )
 
-results = reranker.rerank(results)
+results = reranker.rerank(
+
+    "how does dfs and parsing work",
+
+    results
+
+)
 
 for result in results:
 

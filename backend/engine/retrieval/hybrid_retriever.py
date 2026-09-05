@@ -1,10 +1,11 @@
 from engine.retrieval.dense_retriever import DenseRetriever
 from engine.retrieval.bm25_retriever import BM25Retriever
+from engine.retrieval.reranker import Reranker
 
 
 class HybridRetriever:
 
-    def __init__(self, index):
+    def __init__(self, index, reranker=None):
 
         self.index = index
 
@@ -12,16 +13,21 @@ class HybridRetriever:
 
         self.bm25 = BM25Retriever(index)
 
+        self.reranker = reranker or Reranker()
+
     def retrieve(self, query, top_k=10):
+
+        # Retrieve a broader pool so the cross encoder has useful alternatives.
+        candidate_k = max(top_k * 2, top_k)
 
         dense_results = self.dense.retrieve(
             query,
-            top_k=top_k
+            top_k=candidate_k
         )
 
         bm25_results = self.bm25.retrieve(
             query,
-            top_k=top_k
+            top_k=candidate_k
         )
 
         merged = {}
@@ -112,4 +118,11 @@ class HybridRetriever:
 
         )
 
-        return final_results[:top_k]
+        candidates = final_results[:candidate_k]
+
+        try:
+            return self.reranker.rerank(query, candidates, top_k=top_k)
+        except Exception:
+            # Keep retrieval available if model weights cannot be downloaded or
+            # the reranker temporarily fails.
+            return candidates[:top_k]
