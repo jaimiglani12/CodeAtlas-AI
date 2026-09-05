@@ -2,7 +2,7 @@ services:
   - type: web
     name: codeatlas-api
     runtime: docker
-    plan: 1c-2g
+    plan: free
     rootDir: backend
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
@@ -21,15 +21,13 @@ services:
         sync: false
       - key: CORS_ORIGINS
         value: https://codeatlas-ai.miglanijai2006.chatgpt.site
+      - key: CORS_ORIGIN_REGEX
+        value: 'https://.*\.vercel\.app'
       - key: REPOSITORY_STORAGE_ROOT
         value: /app/storage/repositories
-    disk:
-      name: codeatlas-repositories
-      mountPath: /app/storage
-      sizeGB: 5
 
 databases:
   - name: codeatlas-db
-    plan: 0.1c-256mb
+    plan: free
     databaseName: codeatlas
     user: codeatlas

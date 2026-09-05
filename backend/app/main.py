@@ -31,12 +31,15 @@ allowed_origins = [
     for origin in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
     if origin.strip()
 ]
+allowed_origin_regex = os.getenv("CORS_ORIGIN_REGEX") or None
 
 app.add_middleware(
 
     CORSMiddleware,
 
     allow_origins=allowed_origins,
+
+    allow_origin_regex=allowed_origin_regex,
 
     allow_credentials=True,
 
