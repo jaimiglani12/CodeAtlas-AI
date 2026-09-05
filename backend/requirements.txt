@@ -1,5 +1,6 @@
 fastapi
 uvicorn
+SQLAlchemy
 python-dotenv
 python-multipart
 python-jose
