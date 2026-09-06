@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from typing import Optional
 
@@ -94,6 +94,7 @@ def create_repository(
     response_model=RepositoryResponse,
 )
 def upload_repository(
+    background_tasks: BackgroundTasks,
     workspace_id: int = Form(...),
     name: str = Form(...),
     file: Optional[UploadFile] = File(None),
@@ -110,6 +111,7 @@ def upload_repository(
         name,
         file.file if file else None,
         github_url or None,
+        background_tasks,
     )
 
 
