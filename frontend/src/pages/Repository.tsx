@@ -1,21 +1,19 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { MessageSquare, Workflow, AlertCircle, Loader2, FileCode, X } from "lucide-react";
+import { MessageSquare, AlertCircle, Loader2, FileCode, X } from "lucide-react";
 import clsx from "clsx";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import Spinner from "../components/common/Spinner";
 import FileExplorer from "../components/repository/FileExplorer";
 import RepositoryStats from "../components/repository/RepositoryStats";
-import DependencyGraph from "../components/repository/DependencyGraph";
 import FileViewer from "../components/repository/FileViewer";
 import ChatWindow from "../components/chat/ChatWindow";
 import {
     getRepository,
     getRepositoryFiles,
     getRepositoryStats,
-    getRepositoryGraph,
 } from "../api/repository";
 import { getWorkspace } from "../api/workspace";
 
@@ -38,7 +36,7 @@ export default function Repository() {
 
     const { repositoryId } = useParams();
     const id = Number(repositoryId);
-    const [tab, setTab] = useState<"chat" | "graph" | "file">("chat");
+    const [tab, setTab] = useState<"chat" | "file">("chat");
     const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
     function openFile(path: string) {
@@ -84,13 +82,6 @@ export default function Repository() {
         queryFn: () => getRepositoryStats(id),
         retry: 1,
         enabled: Number.isFinite(id) && isReady,
-    });
-
-    const graphQuery = useQuery({
-        queryKey: ["repository", id, "graph"],
-        queryFn: () => getRepositoryGraph(id),
-        retry: 1,
-        enabled: tab === "graph" && Number.isFinite(id) && isReady,
     });
 
     const notReadyMessage =
@@ -169,19 +160,6 @@ export default function Repository() {
                                     Chat
                                 </button>
 
-                                <button
-                                    onClick={() => setTab("graph")}
-                                    className={clsx(
-                                        "flex items-center gap-2 px-4 py-3 text-sm transition-colors",
-                                        tab === "graph"
-                                            ? "border-b-2 border-olive-500 text-parchment"
-                                            : "text-parchment-dim hover:text-parchment"
-                                    )}
-                                >
-                                    <Workflow size={14} />
-                                    Dependency graph
-                                </button>
-
                                 {selectedFile && (
                                     <button
                                         onClick={() => setTab("file")}
@@ -223,16 +201,6 @@ export default function Repository() {
                                         <ChatWindow repositoryId={id} />
                                     ) : tab === "file" && selectedFile ? (
                                         <FileViewer repositoryId={id} path={selectedFile} />
-                                    ) : graphQuery.isLoading ? (
-                                        <div className="flex h-full items-center justify-center">
-                                            <Spinner size={20} />
-                                        </div>
-                                    ) : graphQuery.isError ? (
-                                        <PanelMessage icon={AlertCircle} text="Couldn't load the dependency graph." />
-                                    ) : graphQuery.data && graphQuery.data.nodes.length === 0 ? (
-                                        <PanelMessage icon={Workflow} text="No call relationships were found in this repository." />
-                                    ) : graphQuery.data ? (
-                                        <DependencyGraph nodes={graphQuery.data.nodes} edges={graphQuery.data.edges} />
                                     ) : null
                                 }
                             </div>
@@ -266,3 +234,4 @@ export default function Repository() {
         </DashboardLayout>
     );
 }
+
