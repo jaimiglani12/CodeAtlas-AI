@@ -29,10 +29,15 @@ class Embedder:
 
     def generate(self, index):
 
-        for chunk in index.chunks:
+        if not index.chunks:
+            return
 
-            chunk.embedding = self.create_embedding(
+        embeddings = self.model.encode(
+            [chunk.content for chunk in index.chunks],
+            batch_size=32,
+            convert_to_numpy=True,
+            show_progress_bar=False,
+        )
 
-                chunk.content
-
-            )
+        for chunk, embedding in zip(index.chunks, embeddings):
+            chunk.embedding = embedding
