@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
+from app.core.database import SessionLocal
 from app.features.repository.indexer import RepositoryIndexer
 from app.features.repository.models import Repository
 from app.features.repository.schemas import (
@@ -91,6 +92,7 @@ class RepositoryService:
         name: str,
         file,
         github_url: str | None,
+        background_tasks=None,
     ):
 
         if not file and not github_url:
@@ -121,9 +123,28 @@ class RepositoryService:
         db.commit()
         db.refresh(repository)
 
-        RepositoryService._run_index(db, repository)
+        if background_tasks is None:
+            RepositoryService._run_index(db, repository)
+        else:
+            background_tasks.add_task(
+                RepositoryService._run_index_in_background,
+                repository.id,
+            )
 
         return repository
+
+    @staticmethod
+    def _run_index_in_background(repository_id: int):
+
+        db = SessionLocal()
+
+        try:
+            repository = db.get(Repository, repository_id)
+
+            if repository is not None:
+                RepositoryService._run_index(db, repository)
+        finally:
+            db.close()
 
     @staticmethod
     def _run_index(db: Session, repository: Repository):
