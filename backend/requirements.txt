@@ -17,9 +17,6 @@ tree-sitter-c
 tree-sitter-go
 tree-sitter-rust
 
-sentence-transformers
-torch
-
 numpy
 psycopg2-binary
 
