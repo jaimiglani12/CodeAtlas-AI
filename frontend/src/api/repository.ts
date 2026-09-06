@@ -30,18 +30,6 @@ export interface FileNode {
     children?: FileNode[];
 }
 
-export interface GraphNode {
-    id: string;
-    label: string;
-    type: "file" | "function" | "class";
-}
-
-export interface GraphEdge {
-    source: string;
-    target: string;
-    kind: "imports" | "calls" | "inherits";
-}
-
 export interface FileContent {
     path: string;
     language: string;
@@ -93,13 +81,6 @@ export async function getRepositoryStats(
     return response.data;
 }
 
-export async function getRepositoryGraph(
-    id: number
-): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
-    const response = await api.get(`/repository/${id}/graph`);
-    return response.data;
-}
-
 export async function getFileContent(
     id: number,
     path: string
@@ -109,3 +90,4 @@ export async function getFileContent(
     });
     return response.data;
 }
+
