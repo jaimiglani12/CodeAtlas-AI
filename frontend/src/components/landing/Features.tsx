@@ -3,7 +3,7 @@ import {
     Search,
     GitBranch,
     Boxes,
-    Workflow,
+    FileText,
     Zap,
 } from "lucide-react";
 
@@ -30,10 +30,10 @@ const features = [
             "Repository parsing powered by Tree-sitter enables structural understanding instead of plain text search.",
     },
     {
-        icon: Workflow,
-        title: "Dependency graph",
+        icon: FileText,
+        title: "Source-grounded answers",
         description:
-            "Visualize relationships between modules, classes and functions across the repository.",
+            "Review the repository files and line ranges used to support each answer.",
     },
     {
         icon: Boxes,
@@ -109,3 +109,4 @@ export default function Features() {
         </section>
     );
 }
+
