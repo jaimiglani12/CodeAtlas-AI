@@ -1,43 +1,35 @@
-from sentence_transformers import SentenceTransformer
+import hashlib
+import re
+
+import numpy as np
 
 
 class Embedder:
 
-    _model = None
-
-    def __init__(self):
-
-        if Embedder._model is None:
-
-            Embedder._model = SentenceTransformer(
-
-                "paraphrase-MiniLM-L3-v2"
-
-            )
-
-        self.model = Embedder._model
+    DIMENSIONS = 384
+    TOKEN_PATTERN = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 
     def create_embedding(self, text):
 
-        return self.model.encode(
+        vector = np.zeros(self.DIMENSIONS, dtype=np.float32)
 
-            text,
+        for token in self.TOKEN_PATTERN.findall(text.lower()):
+            digest = hashlib.blake2b(
+                token.encode("utf-8"),
+                digest_size=8,
+            ).digest()
+            value = int.from_bytes(digest, "little")
+            direction = 1.0 if value & 1 else -1.0
+            vector[value % self.DIMENSIONS] += direction
 
-            convert_to_numpy=True
+        norm = np.linalg.norm(vector)
 
-        )
+        if norm:
+            vector /= norm
+
+        return vector
 
     def generate(self, index):
 
-        if not index.chunks:
-            return
-
-        embeddings = self.model.encode(
-            [chunk.content for chunk in index.chunks],
-            batch_size=1,
-            convert_to_numpy=True,
-            show_progress_bar=False,
-        )
-
-        for chunk, embedding in zip(index.chunks, embeddings):
-            chunk.embedding = embedding
+        for chunk in index.chunks:
+            chunk.embedding = self.create_embedding(chunk.content)
