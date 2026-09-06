@@ -11,7 +11,7 @@ class Embedder:
 
             Embedder._model = SentenceTransformer(
 
-                "all-MiniLM-L6-v2"
+                "paraphrase-MiniLM-L3-v2"
 
             )
 
@@ -34,7 +34,7 @@ class Embedder:
 
         embeddings = self.model.encode(
             [chunk.content for chunk in index.chunks],
-            batch_size=4,
+            batch_size=1,
             convert_to_numpy=True,
             show_progress_bar=False,
         )
