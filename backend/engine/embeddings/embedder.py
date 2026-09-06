@@ -34,7 +34,7 @@ class Embedder:
 
         embeddings = self.model.encode(
             [chunk.content for chunk in index.chunks],
-            batch_size=32,
+            batch_size=4,
             convert_to_numpy=True,
             show_progress_bar=False,
         )
