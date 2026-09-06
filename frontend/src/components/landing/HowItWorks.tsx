@@ -18,7 +18,7 @@ const steps = [
         number: "03",
         title: "Ask, search, explore",
         description:
-            "Chat in plain language, run semantic search, or walk the dependency graph.",
+            "Chat in plain language, inspect cited source files, or run semantic search.",
     },
     {
         number: "04",
@@ -82,3 +82,4 @@ export default function HowItWorks() {
         </section>
     );
 }
+
