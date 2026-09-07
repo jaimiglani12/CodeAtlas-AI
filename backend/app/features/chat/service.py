@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.features.chat.models import ChatMessage
 from app.features.chat.schemas import ChatMessageResponse
-from app.features.repository.indexer import RepositoryIndexer
 from app.features.repository.models import Repository
+from app.features.repository.service import RepositoryService
 
 from engine.retrieval.hybrid_retriever import HybridRetriever
 from engine.retrieval.context_expander import ContextExpander
@@ -36,10 +36,7 @@ class ChatService:
             )
 
         try:
-            index = RepositoryIndexer.get_or_build(
-                repository.id,
-                repository.path,
-            )
+            index = RepositoryService._require_index(repository)
         except Exception:
             raise HTTPException(
                 status_code=500,
@@ -67,11 +64,8 @@ class ChatService:
                 repository_id=repository.id,
                 role="assistant",
                 content=(
-                    "I couldn't find any indexed functions or classes in this "
-                    "repository, so I don't have anything to answer from. "
-                    "Right now this tool only extracts functions/classes from "
-                    "Python files — if this repo is in another language, that's "
-                    "likely why."
+                    "I couldn't find any indexed source content in this "
+                    "repository, so I don't have enough context to answer."
                 ),
             )
 
