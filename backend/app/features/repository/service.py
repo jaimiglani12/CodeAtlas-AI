@@ -4,6 +4,7 @@ from pathlib import Path
 from threading import Lock
 
 from app.core.database import SessionLocal
+from app.features.chat.models import ChatMessage
 from app.features.repository.indexer import RepositoryIndexer
 from app.features.repository.models import Repository
 from app.features.repository.schemas import (
@@ -279,5 +280,11 @@ class RepositoryService:
         repository: Repository,
     ):
 
+        db.query(ChatMessage).filter(
+            ChatMessage.repository_id == repository.id
+        ).delete(synchronize_session=False)
+
         db.delete(repository)
         db.commit()
+
+        RepositoryIndexer.remove_cached(repository.id)
