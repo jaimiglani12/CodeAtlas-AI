@@ -43,6 +43,11 @@ class Repository(Base):
         default="upload",
     )
 
+    source_url = Column(
+        String,
+        nullable=True,
+    )
+
     file_count = Column(
         Integer,
         default=0,
