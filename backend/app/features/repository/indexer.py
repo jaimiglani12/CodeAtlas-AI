@@ -10,6 +10,11 @@ class RepositoryIndexer:
         return IndexCache.get(repository_id)
 
     @staticmethod
+    def remove_cached(repository_id: int):
+
+        IndexCache.remove(repository_id)
+
+    @staticmethod
     def index(repository_id: int, repository_path: str):
 
         builder = RepositoryBuilder()
