@@ -251,7 +251,8 @@ class RepositoryService:
                     repository.id,
                     repository.path,
                 )
-        except Exception:
+        except Exception as error:
+            print(f"REPOSITORY RESTORE ERROR: {error}", flush=True)
             raise HTTPException(
                 status_code=500,
                 detail="Could not load the repository index.",
