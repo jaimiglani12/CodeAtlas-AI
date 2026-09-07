@@ -2,6 +2,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import inspect, text
 
 from app.api.health import router as health_router
 from app.core.config import settings
@@ -49,6 +50,15 @@ app.add_middleware(
 
 )
 Base.metadata.create_all(bind=engine)
+
+if "source_url" not in {
+    column["name"] for column in inspect(engine).get_columns("repositories")
+}:
+    with engine.begin() as connection:
+        connection.execute(
+            text("ALTER TABLE repositories ADD COLUMN source_url VARCHAR")
+        )
+
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(workspace_router)
