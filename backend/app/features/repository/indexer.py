@@ -5,6 +5,11 @@ from engine.cache.index_cache import IndexCache
 class RepositoryIndexer:
 
     @staticmethod
+    def get_cached(repository_id: int):
+
+        return IndexCache.get(repository_id)
+
+    @staticmethod
     def index(repository_id: int, repository_path: str):
 
         builder = RepositoryBuilder()
