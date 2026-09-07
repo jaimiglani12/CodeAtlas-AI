@@ -1,5 +1,8 @@
 class PromptBuilder:
 
+    MAX_CONTEXT_CHARS = 20_000
+    MAX_CHUNK_CHARS = 4_000
+
     def __init__(self):
 
         pass
@@ -18,15 +21,26 @@ class PromptBuilder:
         prompt += "Repository Context\n"
         prompt += "=" * 60 + "\n\n"
 
+        context_chars = 0
+
         for result in results:
 
             chunk = result["chunk"]
+
+            remaining = self.MAX_CONTEXT_CHARS - context_chars
+
+            if remaining <= 0:
+                break
+
+            content = chunk.content[:min(self.MAX_CHUNK_CHARS, remaining)]
 
             prompt += f"Function : {chunk.name}\n"
             prompt += f"File     : {chunk.file_path}\n"
             prompt += f"Lines    : {chunk.start_line}-{chunk.end_line}\n\n"
 
-            prompt += chunk.content
+            prompt += content
+
+            context_chars += len(content)
 
             prompt += "\n"
 
