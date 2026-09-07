@@ -11,9 +11,14 @@ class ChatEngine:
 
     def __init__(self):
 
+        api_key = (os.getenv("GROQ_API_KEY") or "").strip()
+
+        if not api_key:
+            raise RuntimeError("GROQ_API_KEY is not configured.")
+
         self.llm = ChatGroq(
             model_name="llama-3.3-70b-versatile",
-            groq_api_key=os.getenv("GROQ_API_KEY"),
+            groq_api_key=api_key,
         )
 
     def generate(self, prompt: str) -> str:
