@@ -16,8 +16,10 @@ class ChatEngine:
         if not api_key:
             raise RuntimeError("GROQ_API_KEY is not configured.")
 
+        model = (os.getenv("GROQ_MODEL") or "openai/gpt-oss-20b").strip()
+
         self.llm = ChatGroq(
-            model_name="llama-3.3-70b-versatile",
+            model_name=model,
             groq_api_key=api_key,
         )
 
