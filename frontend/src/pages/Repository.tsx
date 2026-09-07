@@ -1,18 +1,13 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { MessageSquare, AlertCircle, Loader2, FileCode, X } from "lucide-react";
-import clsx from "clsx";
+import { MessageSquare, AlertCircle, Loader2 } from "lucide-react";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import Spinner from "../components/common/Spinner";
-import FileExplorer from "../components/repository/FileExplorer";
 import RepositoryStats from "../components/repository/RepositoryStats";
-import FileViewer from "../components/repository/FileViewer";
 import ChatWindow from "../components/chat/ChatWindow";
 import {
     getRepository,
-    getRepositoryFiles,
     getRepositoryStats,
 } from "../api/repository";
 import { getWorkspace } from "../api/workspace";
@@ -36,18 +31,6 @@ export default function Repository() {
 
     const { repositoryId } = useParams();
     const id = Number(repositoryId);
-    const [tab, setTab] = useState<"chat" | "file">("chat");
-    const [selectedFile, setSelectedFile] = useState<string | null>(null);
-
-    function openFile(path: string) {
-        setSelectedFile(path);
-        setTab("file");
-    }
-
-    function closeFile() {
-        setSelectedFile(null);
-        setTab("chat");
-    }
 
     const repoQuery = useQuery({
         queryKey: ["repository", id],
@@ -68,13 +51,6 @@ export default function Repository() {
         queryFn: () => getWorkspace(repoQuery.data!.workspace_id),
         enabled: Boolean(repoQuery.data?.workspace_id),
         retry: 1,
-    });
-
-    const filesQuery = useQuery({
-        queryKey: ["repository", id, "files"],
-        queryFn: () => getRepositoryFiles(id),
-        retry: 1,
-        enabled: Number.isFinite(id) && isReady,
     });
 
     const statsQuery = useQuery({
@@ -120,73 +96,14 @@ export default function Repository() {
 
                     <div className="flex h-full">
 
-                        <div className="w-64 shrink-0 border-r border-line">
-                            {
-                                notReadyMessage ? (
-                                    <PanelMessage
-                                        icon={status === "failed" ? AlertCircle : Loader2}
-                                        text={notReadyMessage}
-                                    />
-                                ) : filesQuery.isLoading ? (
-                                    <div className="flex h-full items-center justify-center">
-                                        <Spinner size={20} />
-                                    </div>
-                                ) : filesQuery.isError ? (
-                                    <PanelMessage icon={AlertCircle} text="Couldn't load files." />
-                                ) : (
-                                    <FileExplorer
-                                        files={filesQuery.data ?? []}
-                                        activePath={selectedFile ?? undefined}
-                                        onSelectFile={openFile}
-                                    />
-                                )
-                            }
-                        </div>
-
                         <div className="flex flex-1 flex-col border-r border-line">
 
                             <div className="flex border-b border-line">
 
-                                <button
-                                    onClick={() => setTab("chat")}
-                                    className={clsx(
-                                        "flex items-center gap-2 px-4 py-3 text-sm transition-colors",
-                                        tab === "chat"
-                                            ? "border-b-2 border-olive-500 text-parchment"
-                                            : "text-parchment-dim hover:text-parchment"
-                                    )}
-                                >
+                                <div className="flex items-center gap-2 border-b-2 border-olive-500 px-4 py-3 text-sm text-parchment">
                                     <MessageSquare size={14} />
                                     Chat
-                                </button>
-
-                                {selectedFile && (
-                                    <button
-                                        onClick={() => setTab("file")}
-                                        className={clsx(
-                                            "flex min-w-0 items-center gap-2 border-l border-line px-4 py-3 text-sm transition-colors",
-                                            tab === "file"
-                                                ? "border-b-2 border-olive-500 text-parchment"
-                                                : "text-parchment-dim hover:text-parchment"
-                                        )}
-                                    >
-                                        <FileCode size={14} className="shrink-0" />
-                                        <span className="max-w-[160px] truncate font-mono text-xs">
-                                            {selectedFile.split("/").pop()}
-                                        </span>
-                                        <span
-                                            role="button"
-                                            aria-label="Close file"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                closeFile();
-                                            }}
-                                            className="ml-1 shrink-0 rounded-sm p-0.5 text-parchment-faint hover:bg-ink hover:text-parchment"
-                                        >
-                                            <X size={12} />
-                                        </span>
-                                    </button>
-                                )}
+                                </div>
 
                             </div>
 
@@ -197,11 +114,9 @@ export default function Repository() {
                                             icon={status === "failed" ? AlertCircle : Loader2}
                                             text={notReadyMessage}
                                         />
-                                    ) : tab === "chat" ? (
+                                    ) : (
                                         <ChatWindow repositoryId={id} />
-                                    ) : tab === "file" && selectedFile ? (
-                                        <FileViewer repositoryId={id} path={selectedFile} />
-                                    ) : null
+                                    )
                                 }
                             </div>
 
@@ -234,4 +149,3 @@ export default function Repository() {
         </DashboardLayout>
     );
 }
-
