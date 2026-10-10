@@ -19,7 +19,7 @@ tree-sitter-rust
 
 numpy
 psycopg2-binary
-
+psycopg[binary]
 numpy
 scikit-learn
 
